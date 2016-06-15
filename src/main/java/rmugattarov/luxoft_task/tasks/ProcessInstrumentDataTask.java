@@ -54,7 +54,7 @@ public class ProcessInstrumentDataTask implements Runnable {
         System.out.println("INSTRUMENT_ONE : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_ONE));
         System.out.println("INSTRUMENT_TWO : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_TWO));
         System.out.println("INSTRUMENT_THREE : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_THREE));
-        System.out.println("INSTRUMENT4 : " + instrumentStatistics.get("INSTRUMENT4"));
+        System.out.println("INSTRUMENT4 : " + genericInstrumentStatistics.get("INSTRUMENT4"));
     }
 
     private void processGenericInstrument(String instrumentId) {
