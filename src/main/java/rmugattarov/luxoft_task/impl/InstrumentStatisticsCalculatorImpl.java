@@ -10,6 +10,7 @@ import rmugattarov.luxoft_task.tasks.ProcessInstrumentDataTask;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +24,7 @@ public class InstrumentStatisticsCalculatorImpl implements InstrumentStatisticsC
     private final BlockingQueue<InstrumentData> blockingQueue = new LinkedBlockingQueue<>();
     private final InstrumentDataProvider instrumentDataProvider;
     private final Map<String, BigDecimal> instrumentStatistics = new HashMap<>();
+    private final Map<String, TreeSet<InstrumentData>> genericInstrumentStatistics = new HashMap<>();
 
     public InstrumentStatisticsCalculatorImpl(InstrumentDataProvider instrumentDataProvider) {
         this.instrumentDataProvider = instrumentDataProvider;
@@ -43,7 +45,7 @@ public class InstrumentStatisticsCalculatorImpl implements InstrumentStatisticsC
                 if (instrumentData == InstrumentData.PROVIDER_EXHAUSTED) {
                     break;
                 }
-                executorService.execute(new ProcessInstrumentDataTask(instrumentStatistics, instrumentData));
+                executorService.execute(new ProcessInstrumentDataTask(instrumentStatistics, genericInstrumentStatistics, instrumentData));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -67,6 +69,11 @@ public class InstrumentStatisticsCalculatorImpl implements InstrumentStatisticsC
 
     @Override
     public BigDecimal getGenericInstrumentSumOfLatestTen(String instrumentId) {
-        return instrumentStatistics.get(instrumentId);
+        TreeSet<InstrumentData> treeSet = genericInstrumentStatistics.get(instrumentId);
+        BigDecimal result = BigDecimal.ZERO;
+        for (InstrumentData instrumentData : treeSet) {
+            result = result.add(new BigDecimal(instrumentData.getValue()));
+        }
+        return result;
     }
 }

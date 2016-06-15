@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Created by rmugattarov on 15.06.2016.
@@ -15,10 +17,12 @@ import java.util.Map;
 public class ProcessInstrumentDataTask implements Runnable {
     private static final BigDecimal BIG_DECIMAL_TWO = new BigDecimal(2);
     private final Map<String, BigDecimal> instrumentStatistics;
+    private final Map<String, TreeSet<InstrumentData>> genericInstrumentStatistics;
     private final InstrumentData instrumentData;
 
-    public ProcessInstrumentDataTask(Map<String, BigDecimal> instrumentStatistics, InstrumentData instrumentData) {
+    public ProcessInstrumentDataTask(Map<String, BigDecimal> instrumentStatistics, Map<String, TreeSet<InstrumentData>> genericInstrumentStatistics, InstrumentData instrumentData) {
         this.instrumentStatistics = instrumentStatistics;
+        this.genericInstrumentStatistics = genericInstrumentStatistics;
         this.instrumentData = instrumentData;
     }
     @Override
@@ -49,10 +53,25 @@ public class ProcessInstrumentDataTask implements Runnable {
         }
         System.out.println("INSTRUMENT_ONE : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_ONE));
         System.out.println("INSTRUMENT_TWO : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_TWO));
+        System.out.println("INSTRUMENT_THREE : " + instrumentStatistics.get(InstrumentConstants.INSTRUMENT_THREE));
+        System.out.println("INSTRUMENT4 : " + instrumentStatistics.get("INSTRUMENT4"));
     }
 
     private void processGenericInstrument(String instrumentId) {
-
+        TreeSet<InstrumentData> treeSet = genericInstrumentStatistics.get(instrumentId);
+        if (treeSet == null) {
+            treeSet = new TreeSet<>((Comparator<InstrumentData>) (o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate()));
+            treeSet.add(instrumentData);
+            genericInstrumentStatistics.put(instrumentId, treeSet);
+        } else if (treeSet.size() < 10) {
+            treeSet.add(instrumentData);
+        } else {
+            LocalDate earliestDate = treeSet.first().getLocalDate();
+            if (instrumentData.getLocalDate().isAfter(earliestDate)) {
+                treeSet.pollFirst();
+                treeSet.add(instrumentData);
+            }
+        }
     }
 
     private void processInstrumentThree() {
