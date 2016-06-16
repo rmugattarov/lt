@@ -7,5 +7,6 @@ import rmugattarov.luxoft_task.dto.InstrumentData;
  */
 public interface InstrumentDataProvider {
     boolean hasNextEntry();
+
     InstrumentData nextEntry();
 }

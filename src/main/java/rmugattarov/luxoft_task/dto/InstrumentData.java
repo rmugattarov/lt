@@ -7,8 +7,8 @@ import java.time.LocalDate;
  * Created by rmugattarov on 15.06.2016.
  */
 public class InstrumentData implements Serializable {
-    private static final long serialVersionUID = 3018176913056556176L;
     public static final InstrumentData PROVIDER_EXHAUSTED = new InstrumentData("PROVIDER_EXHAUSTED", LocalDate.of(1, 1, 1), 0.0);
+    private static final long serialVersionUID = 3018176913056556176L;
     private final String instrumentId;
     private final LocalDate localDate;
     private final Double value;

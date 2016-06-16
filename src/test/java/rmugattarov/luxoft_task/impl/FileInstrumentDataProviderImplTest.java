@@ -13,7 +13,7 @@ public class FileInstrumentDataProviderImplTest {
         String filePath = this.getClass().getClassLoader().getResource("example_input.txt").getPath();
         FileInstrumentDataProviderImpl instrumentDataProvider = new FileInstrumentDataProviderImpl(filePath);
         long lineCount = 0;
-        while(instrumentDataProvider.hasNextEntry()) {
+        while (instrumentDataProvider.hasNextEntry()) {
             System.out.printf("%d) %s\r\n", ++lineCount, instrumentDataProvider.nextEntry());
         }
         instrumentDataProvider.close();
