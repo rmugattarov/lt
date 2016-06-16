@@ -14,9 +14,11 @@ public class Main {
         Thread calculationThread = new Thread(new CalculateInstrumentStatisticsTask(new FileInstrumentDataProviderImpl(args[0])));
         calculationThread.start();
         calculationThread.join();
+        System.out.println();
         System.out.printf("InstrumentOneMean : %f\r\n", GatheredStatistics.getInstrumentOneMean());
         System.out.printf("InstrumentTwoMeanNov2014 : %f\r\n", GatheredStatistics.getInstrumentTwoMeanNov2014());
         System.out.printf("InstrumentThreeMax : %f\r\n", GatheredStatistics.getInstrumentThreeMax());
         System.out.printf("INSTRUMENT4 latest 10 sum : %f\r\n", GatheredStatistics.getGenericInstrumentStatistics("INSTRUMENT4"));
+        System.out.println();
     }
 }

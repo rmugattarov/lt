@@ -1,6 +1,7 @@
 package rmugattarov.luxoft_task.tasks.statistics;
 
 import rmugattarov.luxoft_task.api.InstrumentDataProvider;
+import rmugattarov.luxoft_task.constants.FileSourceConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 import rmugattarov.luxoft_task.tasks.FillInstrumentDataQueueTask;
@@ -41,7 +42,7 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
                 }
                 LocalDate localDate = instrumentData.getLocalDate();
                 DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-                if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+                if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.isAfter(FileSourceConstants.TODAY)) {
                     continue;
                 }
                 String instrumentId = instrumentData.getInstrumentId();

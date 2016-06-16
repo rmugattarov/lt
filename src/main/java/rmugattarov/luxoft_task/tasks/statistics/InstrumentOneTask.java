@@ -3,12 +3,12 @@ package rmugattarov.luxoft_task.tasks.statistics;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Created by rmugattarov on 15.06.2016.
  */
 public class InstrumentOneTask implements Runnable {
-    private static final BigDecimal BIG_DECIMAL_TWO = new BigDecimal(2);
     private final InstrumentData instrumentData;
 
     public InstrumentOneTask(InstrumentData instrumentData) {
@@ -18,10 +18,11 @@ public class InstrumentOneTask implements Runnable {
     @Override
     public void run() {
         BigDecimal instrumentValueAsBigDecimal = new BigDecimal(instrumentData.getValue());
-        if (GatheredStatistics.instrumentOneMean == null) {
-            GatheredStatistics.instrumentOneMean = instrumentValueAsBigDecimal;
+        if (GatheredStatistics.instrumentOneSum == null) {
+            GatheredStatistics.instrumentOneSum = instrumentValueAsBigDecimal;
         } else {
-            GatheredStatistics.instrumentOneMean = GatheredStatistics.instrumentOneMean.add(instrumentValueAsBigDecimal).divide(BIG_DECIMAL_TWO);
+            GatheredStatistics.instrumentOneSum = GatheredStatistics.instrumentOneSum.add(instrumentValueAsBigDecimal);
         }
+        GatheredStatistics.instrumentOneElementCount = GatheredStatistics.instrumentOneElementCount.add(BigInteger.ONE);
     }
 }

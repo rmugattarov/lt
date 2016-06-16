@@ -20,7 +20,7 @@ public class InstrumentThreeTask implements Runnable {
         if (GatheredStatistics.instrumentThreeMax == null) {
             GatheredStatistics.instrumentThreeMax = instrumentValueAsBigDecimal;
         } else {
-            GatheredStatistics.instrumentThreeMax = GatheredStatistics.instrumentOneMean.max(instrumentValueAsBigDecimal);
+            GatheredStatistics.instrumentThreeMax = GatheredStatistics.instrumentThreeMax.max(instrumentValueAsBigDecimal);
         }
     }
 }

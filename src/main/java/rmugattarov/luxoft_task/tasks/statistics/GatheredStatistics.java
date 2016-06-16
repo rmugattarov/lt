@@ -3,25 +3,37 @@ package rmugattarov.luxoft_task.tasks.statistics;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
  * Created by rmugattarov on 16.06.2016.
  */
 public class GatheredStatistics {
-    protected static volatile BigDecimal instrumentOneMean;
-    protected static volatile BigDecimal instrumentTwoMeanNov2014;
+    protected static volatile BigDecimal instrumentOneSum;
+    protected static volatile BigInteger instrumentOneElementCount = BigInteger.ZERO;
+    protected static volatile BigDecimal instrumentTwoNov2014Sum;
+    protected static volatile BigInteger instrumentTwoNov2014ElementCount = BigInteger.ZERO;
     protected static volatile BigDecimal instrumentThreeMax;
     protected static volatile Map<String, TreeSet<InstrumentData>> genericInstrumentStatistics = new HashMap<>();
 
     public static BigDecimal getInstrumentOneMean() {
-        return instrumentOneMean;
+        BigDecimal result = null;
+        if (instrumentOneSum != null && !Objects.equals(instrumentOneElementCount, BigInteger.ZERO)) {
+            result = instrumentOneSum.divide(new BigDecimal(instrumentOneElementCount));
+        }
+        return result;
     }
 
     public static BigDecimal getInstrumentTwoMeanNov2014() {
-        return instrumentTwoMeanNov2014;
+        BigDecimal result = null;
+        if (instrumentTwoNov2014Sum != null && !Objects.equals(instrumentTwoNov2014ElementCount, BigInteger.ZERO)) {
+            result = instrumentTwoNov2014Sum.divide(new BigDecimal(instrumentTwoNov2014ElementCount));
+        }
+        return result;
     }
 
     public static BigDecimal getInstrumentThreeMax() {
