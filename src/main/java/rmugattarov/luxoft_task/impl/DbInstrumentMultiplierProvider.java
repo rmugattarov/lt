@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import rmugattarov.luxoft_task.constants.DbConstants;
+import rmugattarov.luxoft_task.dto.Multiplier;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,14 +19,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class DbInstrumentMultiplierProvider {
     private final static String MULTIPLIER_QUERY = "SELECT " + DbConstants.MULTIPLIER_COL + " FROM " + DbConstants.MULTIPLIER_TABLE + " WHERE " + DbConstants.NAME_COL + "=?";
-    private static LoadingCache<String, Double> multiplierCache = CacheBuilder.newBuilder()
+    private static LoadingCache<String, Multiplier> multiplierCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.SECONDS)
-            .build(new CacheLoader<String, Double>() {
+            .build(new CacheLoader<String, Multiplier>() {
                 private PreparedStatement stmt;
 
                 @Override
-                public Double load(String instrumentId) throws Exception {
-                    Double result = null;
+                public Multiplier load(String instrumentId) throws Exception {
+                    Multiplier result = Multiplier.NO_MULTIPLIER;
                     if (!Strings.isNullOrEmpty(instrumentId)) {
                         if (stmt == null) {
                             Connection connection = DriverManager.getConnection(DbConstants.CONN_URL);
@@ -34,20 +35,20 @@ public class DbInstrumentMultiplierProvider {
                         stmt.setString(1, instrumentId);
                         ResultSet resultSet = stmt.executeQuery();
                         if (resultSet.next()) {
-                            result = resultSet.getDouble(DbConstants.MULTIPLIER_COL);
+                            result = new Multiplier(resultSet.getDouble(DbConstants.MULTIPLIER_COL));
                         }
                     }
-                    System.out.printf("%s multiplier : %f\r\n", instrumentId, result);
+                    System.out.printf("%s multiplier : %s\r\n", instrumentId, result);
                     return result;
                 }
             });
 
-    public static Double getInstrumentMultiplier(String instrumentId) {
+    public static Multiplier getInstrumentMultiplier(String instrumentId) {
         try {
             return multiplierCache.get(instrumentId);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return null;
+        return Multiplier.NO_MULTIPLIER;
     }
 }

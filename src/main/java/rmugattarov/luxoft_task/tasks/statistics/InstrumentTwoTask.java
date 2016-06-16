@@ -1,6 +1,7 @@
 package rmugattarov.luxoft_task.tasks.statistics;
 
 import rmugattarov.luxoft_task.dto.InstrumentData;
+import rmugattarov.luxoft_task.dto.Multiplier;
 import rmugattarov.luxoft_task.impl.DbInstrumentMultiplierProvider;
 
 import java.math.BigDecimal;
@@ -23,9 +24,10 @@ public class InstrumentTwoTask implements Runnable {
         LocalDate localDate = instrumentData.getLocalDate();
         if (localDate.getYear() == 2014 && localDate.getMonth() == Month.NOVEMBER) {
             BigDecimal value = instrumentData.getValue();
-            Double multiplier = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
+            Multiplier multiplierDto = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
+            BigDecimal multiplier = multiplierDto.getMultiplier();
             if (multiplier != null) {
-                value = value.multiply(new BigDecimal(multiplier));
+                value = value.multiply(multiplier);
             }
             if (GatheredStatistics.instrumentTwoNov2014Sum == null) {
                 GatheredStatistics.instrumentTwoNov2014Sum = value;

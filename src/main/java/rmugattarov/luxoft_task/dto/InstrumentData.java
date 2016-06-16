@@ -28,7 +28,7 @@ public class InstrumentData implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        boolean result = false;
+        boolean result = Boolean.FALSE;
         if (o != null && o.getClass() == InstrumentData.class) {
             InstrumentData that = (InstrumentData) o;
             result = this.instrumentId.equals(that.instrumentId) && this.localDate.equals(that.localDate) && this.value.equals(that.value);
