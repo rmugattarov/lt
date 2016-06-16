@@ -8,6 +8,8 @@ import rmugattarov.luxoft_task.tasks.statistics.GatheredStatistics;
 
 import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Created by rmugattarov on 14.06.2016.
@@ -17,22 +19,30 @@ public class Main {
         setUpDb();
         Thread calculationThread = new Thread(new CalculateInstrumentStatisticsTask(new FileInstrumentDataProviderImpl(args[0])));
         calculationThread.start();
-        calculationThread.join();
-        System.out.println();
+        while (calculationThread.isAlive()) {
+            Thread.sleep(5000);
+            logStatistics();
+        }
+        System.out.println("Final reading:");
+        logStatistics();
+        tearDownDb();
+        System.exit(0);
+    }
+
+    private static void logStatistics() {
+        System.out.printf("\r\nStatistics for %s\r\n", new Date());
         System.out.printf("InstrumentOneMean : %f\r\n", GatheredStatistics.getInstrumentOneMean());
         System.out.printf("InstrumentTwoMeanNov2014 : %f\r\n", GatheredStatistics.getInstrumentTwoMeanNov2014());
         System.out.printf("InstrumentThreeMax : %f\r\n", GatheredStatistics.getInstrumentThreeMax());
         System.out.printf("%s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, GatheredStatistics.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
-        System.out.println();
-        tearDownDb();
-        System.exit(0);
     }
 
     private static void tearDownDb() {
         try {
             DriverManager.getConnection(DbConstants.CONN_URL + ";drop=true");
         } catch (SQLException e) {
-            System.out.printf("Dropped in-memory DB. Error code : %d\r\n", e.getErrorCode());
+            int errorCode = e.getErrorCode();
+            System.out.printf("Dropped in-memory DB. Error code : %d : %s\r\n", errorCode, errorCode == 45000 ? "OK" : "NOT OK");
         }
     }
 

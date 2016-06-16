@@ -34,7 +34,6 @@ public class DbInstrumentMultiplierProvider {
                             result = new Multiplier(resultSet.getDouble(DbConstants.MULTIPLIER_COL));
                         }
                     }
-                    System.out.printf("%s multiplier : %s\r\n", instrumentId, result);
                     return result;
                 }
             });
