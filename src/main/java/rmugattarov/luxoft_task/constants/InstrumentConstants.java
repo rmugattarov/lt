@@ -7,4 +7,5 @@ public interface InstrumentConstants {
     String INSTRUMENT_ONE = "INSTRUMENT1";
     String INSTRUMENT_TWO = "INSTRUMENT2";
     String INSTRUMENT_THREE = "INSTRUMENT3";
+    String INSTRUMENT_FOUR = "INSTRUMENT4";
 }

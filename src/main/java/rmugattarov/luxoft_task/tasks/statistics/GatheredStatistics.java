@@ -48,7 +48,7 @@ public class GatheredStatistics {
                 if (result == null) {
                     result = BigDecimal.ZERO;
                 }
-                result = result.add(new BigDecimal(instrumentData.getValue()));
+                result = result.add(instrumentData.getValue());
             }
         }
         return result;

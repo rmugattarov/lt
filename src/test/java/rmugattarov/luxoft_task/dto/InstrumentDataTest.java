@@ -3,6 +3,7 @@ package rmugattarov.luxoft_task.dto;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,8 +16,8 @@ import java.util.Set;
 public class InstrumentDataTest {
     @Test
     public void test_equals() {
-        InstrumentData instrumentData = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), 1.01);
-        InstrumentData instrumentDataCopy = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), 1.01);
+        InstrumentData instrumentData = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), new BigDecimal(1.01));
+        InstrumentData instrumentDataCopy = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), new BigDecimal(1.01));
         List<InstrumentData> list = new ArrayList<>();
         Assert.assertTrue(list.add(instrumentData));
         Assert.assertTrue(list.add(instrumentData));
@@ -26,8 +27,8 @@ public class InstrumentDataTest {
 
     @Test
     public void test_hashCode() {
-        InstrumentData instrumentData = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), 1.01);
-        InstrumentData instrumentDataCopy = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), 1.01);
+        InstrumentData instrumentData = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), new BigDecimal(1.01));
+        InstrumentData instrumentDataCopy = new InstrumentData("qwerty", LocalDate.of(2000, 1, 1), new BigDecimal(1.01));
         Set<InstrumentData> set = new HashSet<>();
         Assert.assertTrue(set.add(instrumentData));
         Assert.assertFalse(set.add(instrumentData));

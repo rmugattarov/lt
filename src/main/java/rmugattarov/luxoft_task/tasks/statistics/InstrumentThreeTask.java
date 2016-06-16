@@ -1,6 +1,7 @@
 package rmugattarov.luxoft_task.tasks.statistics;
 
 import rmugattarov.luxoft_task.dto.InstrumentData;
+import rmugattarov.luxoft_task.impl.DbInstrumentMultiplierProvider;
 
 import java.math.BigDecimal;
 
@@ -16,11 +17,15 @@ public class InstrumentThreeTask implements Runnable {
 
     @Override
     public void run() {
-        BigDecimal instrumentValueAsBigDecimal = new BigDecimal(instrumentData.getValue());
+        BigDecimal value = instrumentData.getValue();
+        Double multiplier = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
+        if (multiplier != null) {
+            value = value.multiply(new BigDecimal(multiplier));
+        }
         if (GatheredStatistics.instrumentThreeMax == null) {
-            GatheredStatistics.instrumentThreeMax = instrumentValueAsBigDecimal;
+            GatheredStatistics.instrumentThreeMax = value;
         } else {
-            GatheredStatistics.instrumentThreeMax = GatheredStatistics.instrumentThreeMax.max(instrumentValueAsBigDecimal);
+            GatheredStatistics.instrumentThreeMax = GatheredStatistics.instrumentThreeMax.max(value);
         }
     }
 }
