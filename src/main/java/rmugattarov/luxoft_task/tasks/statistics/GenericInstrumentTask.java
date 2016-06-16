@@ -29,11 +29,11 @@ public class GenericInstrumentTask implements Runnable {
             value = value.multiply(multiplier);
             instrumentData = new InstrumentData(instrumentId, instrumentData.getLocalDate(), value);
         }
-        TreeSet<InstrumentData> treeSet = GatheredStatistics.genericInstrumentStatistics.get(instrumentId);
+        TreeSet<InstrumentData> treeSet = StatisticsAccumulator.genericInstrumentStatistics.get(instrumentId);
         if (treeSet == null) {
             treeSet = new TreeSet<>((Comparator<InstrumentData>) (o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate()));
             treeSet.add(instrumentData);
-            GatheredStatistics.genericInstrumentStatistics.put(instrumentId, treeSet);
+            StatisticsAccumulator.genericInstrumentStatistics.put(instrumentId, treeSet);
         } else if (treeSet.size() < 10) {
             treeSet.add(instrumentData);
         } else {

@@ -29,12 +29,12 @@ public class InstrumentTwoTask implements Runnable {
             if (multiplier != null) {
                 value = value.multiply(multiplier);
             }
-            if (GatheredStatistics.instrumentTwoNov2014Sum == null) {
-                GatheredStatistics.instrumentTwoNov2014Sum = value;
+            if (StatisticsAccumulator.instrumentTwoNov2014Sum == null) {
+                StatisticsAccumulator.instrumentTwoNov2014Sum = value;
             } else {
-                GatheredStatistics.instrumentTwoNov2014Sum = GatheredStatistics.instrumentTwoNov2014Sum.add(value);
+                StatisticsAccumulator.instrumentTwoNov2014Sum = StatisticsAccumulator.instrumentTwoNov2014Sum.add(value);
             }
-            GatheredStatistics.instrumentTwoNov2014ElementCount = GatheredStatistics.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
+            StatisticsAccumulator.instrumentTwoNov2014ElementCount = StatisticsAccumulator.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
         }
     }
 }

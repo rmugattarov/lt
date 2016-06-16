@@ -4,11 +4,10 @@ import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.impl.FileInstrumentDataProviderImpl;
 import rmugattarov.luxoft_task.tasks.statistics.CalculateInstrumentStatisticsTask;
-import rmugattarov.luxoft_task.tasks.statistics.GatheredStatistics;
+import rmugattarov.luxoft_task.tasks.statistics.StatisticsAccumulator;
 
 import java.io.FileNotFoundException;
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
 
 /**
@@ -32,10 +31,10 @@ public class Main {
 
     private static void logStatistics() {
         System.out.printf("\r\n>> Statistics for %1$tH:%1$tM:%1$tS\r\n", new Date());
-        System.out.printf("> InstrumentOneMean : %f\r\n", GatheredStatistics.getInstrumentOneMean());
-        System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", GatheredStatistics.getInstrumentTwoMeanNov2014());
-        System.out.printf("> InstrumentThreeMax : %f\r\n", GatheredStatistics.getInstrumentThreeMax());
-        System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, GatheredStatistics.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
+        System.out.printf("> InstrumentOneMean : %f\r\n", StatisticsAccumulator.getInstrumentOneMean());
+        System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", StatisticsAccumulator.getInstrumentTwoMeanNov2014());
+        System.out.printf("> InstrumentThreeMax : %f\r\n", StatisticsAccumulator.getInstrumentThreeMax());
+        System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, StatisticsAccumulator.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
     }
 
     private static void tearDownDb() {

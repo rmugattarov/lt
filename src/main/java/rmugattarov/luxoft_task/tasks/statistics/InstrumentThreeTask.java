@@ -24,10 +24,10 @@ public class InstrumentThreeTask implements Runnable {
         if (multiplier != null) {
             value = value.multiply(multiplier);
         }
-        if (GatheredStatistics.instrumentThreeMax == null) {
-            GatheredStatistics.instrumentThreeMax = value;
+        if (StatisticsAccumulator.instrumentThreeMax == null) {
+            StatisticsAccumulator.instrumentThreeMax = value;
         } else {
-            GatheredStatistics.instrumentThreeMax = GatheredStatistics.instrumentThreeMax.max(value);
+            StatisticsAccumulator.instrumentThreeMax = StatisticsAccumulator.instrumentThreeMax.max(value);
         }
     }
 }

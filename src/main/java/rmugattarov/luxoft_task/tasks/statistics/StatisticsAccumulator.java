@@ -12,7 +12,7 @@ import java.util.TreeSet;
 /**
  * Created by rmugattarov on 16.06.2016.
  */
-public class GatheredStatistics {
+public class StatisticsAccumulator {
     protected static volatile BigDecimal instrumentOneSum;
     protected static volatile BigInteger instrumentOneElementCount = BigInteger.ZERO;
     protected static volatile BigDecimal instrumentTwoNov2014Sum;

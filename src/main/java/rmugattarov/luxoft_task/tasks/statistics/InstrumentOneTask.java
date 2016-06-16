@@ -25,11 +25,11 @@ public class InstrumentOneTask implements Runnable {
         if (multiplier != null) {
             value = value.multiply(multiplier);
         }
-        if (GatheredStatistics.instrumentOneSum == null) {
-            GatheredStatistics.instrumentOneSum = value;
+        if (StatisticsAccumulator.instrumentOneSum == null) {
+            StatisticsAccumulator.instrumentOneSum = value;
         } else {
-            GatheredStatistics.instrumentOneSum = GatheredStatistics.instrumentOneSum.add(value);
+            StatisticsAccumulator.instrumentOneSum = StatisticsAccumulator.instrumentOneSum.add(value);
         }
-        GatheredStatistics.instrumentOneElementCount = GatheredStatistics.instrumentOneElementCount.add(BigInteger.ONE);
+        StatisticsAccumulator.instrumentOneElementCount = StatisticsAccumulator.instrumentOneElementCount.add(BigInteger.ONE);
     }
 }
