@@ -23,18 +23,19 @@ public class Main {
             Thread.sleep(5000);
             logStatistics();
         }
-        System.out.println("Final reading:");
+        System.out.println("\r\n>> Final reading:");
         logStatistics();
         tearDownDb();
+        System.out.println("\r\n>> Program complete. Shutting down...");
         System.exit(0);
     }
 
     private static void logStatistics() {
-        System.out.printf("\r\nStatistics for %s\r\n", new Date());
-        System.out.printf("InstrumentOneMean : %f\r\n", GatheredStatistics.getInstrumentOneMean());
-        System.out.printf("InstrumentTwoMeanNov2014 : %f\r\n", GatheredStatistics.getInstrumentTwoMeanNov2014());
-        System.out.printf("InstrumentThreeMax : %f\r\n", GatheredStatistics.getInstrumentThreeMax());
-        System.out.printf("%s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, GatheredStatistics.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
+        System.out.printf("\r\n>> Statistics for %1$tH:%1$tM:%1$tS\r\n", new Date());
+        System.out.printf("> InstrumentOneMean : %f\r\n", GatheredStatistics.getInstrumentOneMean());
+        System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", GatheredStatistics.getInstrumentTwoMeanNov2014());
+        System.out.printf("> InstrumentThreeMax : %f\r\n", GatheredStatistics.getInstrumentThreeMax());
+        System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, GatheredStatistics.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
     }
 
     private static void tearDownDb() {
@@ -42,7 +43,7 @@ public class Main {
             DriverManager.getConnection(DbConstants.CONN_URL + ";drop=true");
         } catch (SQLException e) {
             int errorCode = e.getErrorCode();
-            System.out.printf("Dropped in-memory DB. Error code : %d : %s\r\n", errorCode, errorCode == 45000 ? "OK" : "NOT OK");
+            System.out.printf("\r\n>> Dropped in-memory DB. Error code : %d : %s\r\n", errorCode, errorCode == 45000 ? "OK" : "NOT OK");
         }
     }
 
@@ -54,10 +55,11 @@ public class Main {
         statement.executeUpdate("INSERT INTO " + DbConstants.MULTIPLIER_TABLE + " (" + DbConstants.NAME_COL + ", " + DbConstants.MULTIPLIER_COL + ") VALUES ('" + InstrumentConstants.INSTRUMENT_ONE + "', 2.0)");
         statement.executeUpdate("INSERT INTO " + DbConstants.MULTIPLIER_TABLE + " (" + DbConstants.NAME_COL + ", " + DbConstants.MULTIPLIER_COL + ") VALUES ('" + InstrumentConstants.INSTRUMENT_TWO + "', 0.5)");
         ResultSet resultSet = statement.executeQuery("SELECT * FROM " + DbConstants.MULTIPLIER_TABLE);
-        System.out.println(DbConstants.MULTIPLIER_TABLE);
+        System.out.printf("\r\n>> %s\r\n", DbConstants.MULTIPLIER_TABLE);
         while (resultSet.next()) {
-            System.out.printf("%d | %s | %f\r\n", resultSet.getInt(DbConstants.ID_COL), resultSet.getString(DbConstants.NAME_COL), resultSet.getDouble(DbConstants.MULTIPLIER_COL));
+            System.out.printf("> %d | %s | %f\r\n", resultSet.getInt(DbConstants.ID_COL), resultSet.getString(DbConstants.NAME_COL), resultSet.getDouble(DbConstants.MULTIPLIER_COL));
         }
+        System.out.println();
         statement.close();
         connection.close();
     }
