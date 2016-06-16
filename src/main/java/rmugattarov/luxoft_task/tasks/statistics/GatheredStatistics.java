@@ -23,7 +23,7 @@ public class GatheredStatistics {
     public static BigDecimal getInstrumentOneMean() {
         BigDecimal result = null;
         if (instrumentOneSum != null && !Objects.equals(instrumentOneElementCount, BigInteger.ZERO)) {
-            result = instrumentOneSum.divide(new BigDecimal(instrumentOneElementCount));
+            result = instrumentOneSum.divide(new BigDecimal(instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
         }
         return result;
     }
@@ -31,7 +31,7 @@ public class GatheredStatistics {
     public static BigDecimal getInstrumentTwoMeanNov2014() {
         BigDecimal result = null;
         if (instrumentTwoNov2014Sum != null && !Objects.equals(instrumentTwoNov2014ElementCount, BigInteger.ZERO)) {
-            result = instrumentTwoNov2014Sum.divide(new BigDecimal(instrumentTwoNov2014ElementCount));
+            result = instrumentTwoNov2014Sum.divide(new BigDecimal(instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
         }
         return result;
     }
