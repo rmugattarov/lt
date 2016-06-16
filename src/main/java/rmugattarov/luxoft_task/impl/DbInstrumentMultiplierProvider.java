@@ -22,16 +22,12 @@ public class DbInstrumentMultiplierProvider {
     private static LoadingCache<String, Multiplier> multiplierCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.SECONDS)
             .build(new CacheLoader<String, Multiplier>() {
-                private PreparedStatement stmt;
-
                 @Override
                 public Multiplier load(String instrumentId) throws Exception {
                     Multiplier result = Multiplier.NO_MULTIPLIER;
                     if (!Strings.isNullOrEmpty(instrumentId)) {
-                        if (stmt == null) {
-                            Connection connection = DriverManager.getConnection(DbConstants.CONN_URL);
-                            stmt = connection.prepareStatement(MULTIPLIER_QUERY);
-                        }
+                        Connection connection = DriverManager.getConnection(DbConstants.CONN_URL);
+                        PreparedStatement stmt = connection.prepareStatement(MULTIPLIER_QUERY);
                         stmt.setString(1, instrumentId);
                         ResultSet resultSet = stmt.executeQuery();
                         if (resultSet.next()) {
