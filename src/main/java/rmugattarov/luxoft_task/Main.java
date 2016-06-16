@@ -23,6 +23,7 @@ public class Main {
         System.out.printf("INSTRUMENT4 latest 10 sum : %f\r\n", GatheredStatistics.getGenericInstrumentStatistics("INSTRUMENT4"));
         System.out.println();
         tearDownDb();
+        System.exit(0);
     }
 
     private static void tearDownDb() {
