@@ -26,6 +26,7 @@ public class FillInstrumentDataQueueTask implements Runnable {
                 InstrumentData instrumentData = instrumentDataProvider.nextEntry();
                 blockingQueue.put(instrumentData);
             }
+            System.out.println("\r\n>> Read data task complete\r\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
