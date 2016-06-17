@@ -96,7 +96,7 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
             instrumentThreeTask.interrupt();
             genericInstrumentTask.interrupt();
 
-            System.out.println("\r\n>> Shutdown complete\r\n");
+            System.out.println("\r\n>> Producer/Consumer threads shutdown complete\r\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

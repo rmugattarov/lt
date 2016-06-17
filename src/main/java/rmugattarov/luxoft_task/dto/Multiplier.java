@@ -8,8 +8,8 @@ import java.util.Objects;
  * Created by rmugattarov on 16.06.2016.
  */
 public class Multiplier implements Serializable {
-    private static final long serialVersionUID = 7969781812425555631L;
     public static final Multiplier NO_MULTIPLIER = new Multiplier(null);
+    private static final long serialVersionUID = 7969781812425555631L;
     private final BigDecimal multiplier;
 
     public Multiplier(Double multiplier) {
