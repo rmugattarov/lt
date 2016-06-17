@@ -8,13 +8,18 @@ import rmugattarov.luxoft_task.tasks.FillInstrumentDataQueueTask;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by rmugattarov on 15.06.2016.
  */
 public class CalculateInstrumentStatisticsTask implements Runnable {
-    private final BlockingQueue<InstrumentData> blockingQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<InstrumentData> commonQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<InstrumentData> instrumentOneQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<InstrumentData> instrumentTwoQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<InstrumentData> instrumentThreeQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<InstrumentData> genericInstrumentQueue = new LinkedBlockingQueue<>();
     private InstrumentDataProvider instrumentDataProvider;
 
     public CalculateInstrumentStatisticsTask(InstrumentDataProvider instrumentDataProvider) {
@@ -23,72 +28,77 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
 
     @Override
     public void run() {
-        ExecutorService producerExecutor = Executors.newSingleThreadExecutor();
-        producerExecutor.execute(new FillInstrumentDataQueueTask(instrumentDataProvider, blockingQueue));
+        Thread providerThread = new Thread(new FillInstrumentDataQueueTask(instrumentDataProvider, commonQueue));
+        Thread instrumentOneTask = new Thread(new InstrumentOneTask(instrumentOneQueue));
+        Thread instrumentTwoTask = new Thread(new InstrumentTwoTask(instrumentTwoQueue));
+        Thread instrumentThreeTask = new Thread(new InstrumentThreeTask(instrumentThreeQueue));
+        Thread genericInstrumentTask = new Thread(new GenericInstrumentTask(genericInstrumentQueue));
 
-        ExecutorService instrumentOneExecutor = Executors.newSingleThreadExecutor();
-        ExecutorService instrumentTwoExecutor = Executors.newSingleThreadExecutor();
-        ExecutorService instrumentThreeExecutor = Executors.newSingleThreadExecutor();
-        ExecutorService genericInstrumentExecutor = Executors.newSingleThreadExecutor();
+        providerThread.start();
+        instrumentOneTask.start();
+        instrumentTwoTask.start();
+        instrumentThreeTask.start();
+        genericInstrumentTask.start();
 
         while (true) {
             try {
-                InstrumentData instrumentData = blockingQueue.take();
-                if (instrumentData == InstrumentData.PROVIDER_EXHAUSTED) {
-                    break;
-                }
+                InstrumentData instrumentData = commonQueue.take();
+
                 if (instrumentData == null) {
                     continue;
                 }
-                LocalDate localDate = instrumentData.getLocalDate();
-                DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-                if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.isAfter(FileSourceConstants.TODAY)) {
-                    continue;
+                if (instrumentData == InstrumentData.PROVIDER_EXHAUSTED) {
+                    instrumentOneQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    instrumentTwoQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    instrumentThreeQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    genericInstrumentQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    break;
+                } else {
+                    LocalDate localDate = instrumentData.getLocalDate();
+                    DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+                    if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.isAfter(FileSourceConstants.TODAY)) {
+                        continue;
+                    }
+                    String instrumentId = instrumentData.getInstrumentId();
+                    switch (instrumentId) {
+                        case InstrumentConstants.INSTRUMENT_ONE:
+                            instrumentOneQueue.put(instrumentData);
+                            break;
+                        case InstrumentConstants.INSTRUMENT_TWO:
+                            instrumentTwoQueue.put(instrumentData);
+                            break;
+                        case InstrumentConstants.INSTRUMENT_THREE:
+                            instrumentThreeQueue.put(instrumentData);
+                            break;
+                        default:
+                            genericInstrumentQueue.put(instrumentData);
+                            break;
+                    }
                 }
-                String instrumentId = instrumentData.getInstrumentId();
-                switch (instrumentId) {
-                    case InstrumentConstants.INSTRUMENT_ONE:
-                        instrumentOneExecutor.execute(new InstrumentOneTask(instrumentData));
-                        break;
-                    case InstrumentConstants.INSTRUMENT_TWO:
-                        instrumentTwoExecutor.execute(new InstrumentTwoTask(instrumentData));
-                        break;
-                    case InstrumentConstants.INSTRUMENT_THREE:
-                        instrumentThreeExecutor.execute(new InstrumentThreeTask(instrumentData));
-                        break;
-                    default:
-                        genericInstrumentExecutor.execute(new GenericInstrumentTask(instrumentData));
-                        break;
-                }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        shutdown(producerExecutor, instrumentOneExecutor, instrumentTwoExecutor, instrumentThreeExecutor, genericInstrumentExecutor);
+        shutdown(providerThread, instrumentOneTask, instrumentTwoTask, instrumentThreeTask, genericInstrumentTask);
     }
 
-    private void shutdown(ExecutorService producerExecutor, ExecutorService instrumentOneExecutor, ExecutorService instrumentTwoExecutor, ExecutorService instrumentThreeExecutor, ExecutorService genericInstrumentExecutor) {
-        producerExecutor.shutdown();
-        instrumentOneExecutor.shutdown();
-        instrumentTwoExecutor.shutdown();
-        instrumentThreeExecutor.shutdown();
-        genericInstrumentExecutor.shutdown();
-
+    private void shutdown(Thread providerThread, Thread instrumentOneTask, Thread instrumentTwoTask, Thread instrumentThreeTask, Thread genericInstrumentTask) {
         try {
-            producerExecutor.awaitTermination(1, TimeUnit.MINUTES);
-            instrumentOneExecutor.awaitTermination(1, TimeUnit.MINUTES);
-            instrumentTwoExecutor.awaitTermination(1, TimeUnit.MINUTES);
-            instrumentThreeExecutor.awaitTermination(1, TimeUnit.MINUTES);
-            genericInstrumentExecutor.awaitTermination(1, TimeUnit.MINUTES);
+            providerThread.join(60000);
+            instrumentOneTask.join(60000);
+            instrumentTwoTask.join(60000);
+            instrumentThreeTask.join(60000);
+            genericInstrumentTask.join(60000);
+
+            providerThread.interrupt();
+            instrumentOneTask.interrupt();
+            instrumentTwoTask.interrupt();
+            instrumentThreeTask.interrupt();
+            genericInstrumentTask.interrupt();
+
+            System.out.println("\r\n>> Shutdown complete\r\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        producerExecutor.shutdownNow();
-        instrumentOneExecutor.shutdownNow();
-        instrumentTwoExecutor.shutdownNow();
-        instrumentThreeExecutor.shutdownNow();
-        genericInstrumentExecutor.shutdownNow();
     }
 }
