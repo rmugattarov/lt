@@ -15,12 +15,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by rmugattarov on 15.06.2016.
  */
 public class CalculateInstrumentStatisticsTask implements Runnable {
-    private final BlockingQueue<InstrumentData> commonQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<InstrumentData> instrumentOneQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<InstrumentData> instrumentTwoQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<InstrumentData> instrumentThreeQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<InstrumentData> genericInstrumentQueue = new LinkedBlockingQueue<>();
-    private InstrumentDataProvider instrumentDataProvider;
+    private final BlockingQueue<InstrumentData> commonQueue = new LinkedBlockingQueue<>(10);
+    private final BlockingQueue<InstrumentData> mondayQueue = new LinkedBlockingQueue<>(10);
+    private final BlockingQueue<InstrumentData> tuesdayQueue = new LinkedBlockingQueue<>(10);
+    private final BlockingQueue<InstrumentData> wednesdayQueue = new LinkedBlockingQueue<>(10);
+    private final BlockingQueue<InstrumentData> thursdayQueue = new LinkedBlockingQueue<>(10);
+    private final BlockingQueue<InstrumentData> fridayQueue = new LinkedBlockingQueue<>(10);
+    private final InstrumentDataProvider instrumentDataProvider;
 
     public CalculateInstrumentStatisticsTask(InstrumentDataProvider instrumentDataProvider) {
         this.instrumentDataProvider = instrumentDataProvider;
@@ -29,49 +30,49 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
     @Override
     public void run() {
         Thread providerThread = new Thread(new FillInstrumentDataQueueTask(instrumentDataProvider, commonQueue));
-        Thread instrumentOneTask = new Thread(new InstrumentOneTask(instrumentOneQueue));
-        Thread instrumentTwoTask = new Thread(new InstrumentTwoTask(instrumentTwoQueue));
-        Thread instrumentThreeTask = new Thread(new InstrumentThreeTask(instrumentThreeQueue));
-        Thread genericInstrumentTask = new Thread(new GenericInstrumentTask(genericInstrumentQueue));
+        Thread mondayTask = new Thread(new InstrumentTask(DayOfWeek.MONDAY, mondayQueue));
+        Thread tuesdayTask = new Thread(new InstrumentTask(DayOfWeek.TUESDAY, tuesdayQueue));
+        Thread wednesdayTask = new Thread(new InstrumentTask(DayOfWeek.WEDNESDAY, wednesdayQueue));
+        Thread thursdayTask = new Thread(new InstrumentTask(DayOfWeek.THURSDAY, thursdayQueue));
+        Thread fridayTask = new Thread(new InstrumentTask(DayOfWeek.FRIDAY, fridayQueue));
 
         providerThread.start();
-        instrumentOneTask.start();
-        instrumentTwoTask.start();
-        instrumentThreeTask.start();
-        genericInstrumentTask.start();
+        mondayTask.start();
+        tuesdayTask.start();
+        wednesdayTask.start();
+        thursdayTask.start();
+        fridayTask.start();
 
         while (true) {
             try {
                 InstrumentData instrumentData = commonQueue.take();
-
                 if (instrumentData == null) {
                     continue;
                 }
                 if (instrumentData == InstrumentData.PROVIDER_EXHAUSTED) {
-                    instrumentOneQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
-                    instrumentTwoQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
-                    instrumentThreeQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
-                    genericInstrumentQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    mondayQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    tuesdayQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    wednesdayQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    thursdayQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
+                    fridayQueue.put(InstrumentData.PROVIDER_EXHAUSTED);
                     break;
                 } else {
                     LocalDate localDate = instrumentData.getLocalDate();
-                    DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-                    if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.isAfter(FileSourceConstants.TODAY)) {
-                        continue;
-                    }
-                    String instrumentId = instrumentData.getInstrumentId();
-                    switch (instrumentId) {
-                        case InstrumentConstants.INSTRUMENT_ONE:
-                            instrumentOneQueue.put(instrumentData);
+                    switch (localDate.getDayOfWeek()) {
+                        case MONDAY:
+                            mondayQueue.put(instrumentData);
                             break;
-                        case InstrumentConstants.INSTRUMENT_TWO:
-                            instrumentTwoQueue.put(instrumentData);
+                        case TUESDAY:
+                            tuesdayQueue.put(instrumentData);
                             break;
-                        case InstrumentConstants.INSTRUMENT_THREE:
-                            instrumentThreeQueue.put(instrumentData);
+                        case WEDNESDAY:
+                            wednesdayQueue.put(instrumentData);
                             break;
-                        default:
-                            genericInstrumentQueue.put(instrumentData);
+                        case THURSDAY:
+                            thursdayQueue.put(instrumentData);
+                            break;
+                        case FRIDAY:
+                            fridayQueue.put(instrumentData);
                             break;
                     }
                 }
@@ -79,22 +80,24 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
                 e.printStackTrace();
             }
         }
-        shutdown(providerThread, instrumentOneTask, instrumentTwoTask, instrumentThreeTask, genericInstrumentTask);
+        shutdown(providerThread, mondayTask, tuesdayTask, wednesdayTask, thursdayTask, fridayTask);
     }
 
-    private void shutdown(Thread providerThread, Thread instrumentOneTask, Thread instrumentTwoTask, Thread instrumentThreeTask, Thread genericInstrumentTask) {
+    private void shutdown(Thread providerThread, Thread mondayTask, Thread tuesdayTask, Thread wednesdayTask, Thread thursdayTask, Thread fridayTask) {
         try {
             providerThread.join(60000);
-            instrumentOneTask.join(60000);
-            instrumentTwoTask.join(60000);
-            instrumentThreeTask.join(60000);
-            genericInstrumentTask.join(60000);
+            mondayTask.join(60000);
+            tuesdayTask.join(60000);
+            wednesdayTask.join(60000);
+            thursdayTask.join(60000);
+            fridayTask.join(60000);
 
             providerThread.interrupt();
-            instrumentOneTask.interrupt();
-            instrumentTwoTask.interrupt();
-            instrumentThreeTask.interrupt();
-            genericInstrumentTask.interrupt();
+            mondayTask.interrupt();
+            tuesdayTask.interrupt();
+            wednesdayTask.interrupt();
+            thursdayTask.interrupt();
+            fridayTask.interrupt();
 
             System.out.println("\r\n>> Producer/Consumer threads shutdown complete\r\n");
         } catch (InterruptedException e) {

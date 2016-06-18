@@ -1,5 +1,6 @@
 package rmugattarov.luxoft_task;
 
+import rmugattarov.luxoft_task.accumulator.StatisticsReader;
 import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.impl.FileInstrumentDataProviderImpl;
@@ -31,10 +32,10 @@ public class Main {
 
     private static void logStatistics() {
         System.out.printf("\r\n>> Statistics for %1$tH:%1$tM:%1$tS\r\n", new Date());
-        System.out.printf("> InstrumentOneMean : %f\r\n", StatisticsAccumulator.getInstrumentOneMean());
-        System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", StatisticsAccumulator.getInstrumentTwoMeanNov2014());
-        System.out.printf("> InstrumentThreeMax : %f\r\n", StatisticsAccumulator.getInstrumentThreeMax());
-        System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, StatisticsAccumulator.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
+        System.out.printf("> InstrumentOneMean : %f\r\n", StatisticsReader.getInstrumentOneMean());
+        System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", StatisticsReader.getInstrumentTwoMeanNov2014());
+        System.out.printf("> InstrumentThreeMax : %f\r\n", StatisticsReader.getInstrumentThreeMax());
+        System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, StatisticsReader.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
     }
 
     private static void tearDownDb() {
