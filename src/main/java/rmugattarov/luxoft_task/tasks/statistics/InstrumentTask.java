@@ -16,6 +16,7 @@ import java.util.concurrent.BlockingQueue;
  * Created by rmugattarov on 18.06.2016.
  */
 public class InstrumentTask implements Runnable {
+    public static final Comparator<InstrumentData> INSTRUMENT_DATA_COMPARATOR = (o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate());
     private final DayOfWeek myDay;
     private final BlockingQueue<InstrumentData> queue;
 
@@ -87,7 +88,7 @@ public class InstrumentTask implements Runnable {
                 break;
         }
         if (treeSet == null) {
-            treeSet = new TreeSet<>((Comparator<InstrumentData>) (o1, o2) -> o1.getLocalDate().compareTo(o2.getLocalDate()));
+            treeSet = new TreeSet<>(INSTRUMENT_DATA_COMPARATOR);
             treeSet.add(instrumentData);
             switch (myDay) {
                 case MONDAY:

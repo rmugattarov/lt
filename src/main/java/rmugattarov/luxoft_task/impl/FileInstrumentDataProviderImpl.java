@@ -4,8 +4,7 @@ import rmugattarov.luxoft_task.api.FileInstrumentDataProvider;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 import rmugattarov.luxoft_task.util.DtoUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -16,7 +15,7 @@ public class FileInstrumentDataProviderImpl implements FileInstrumentDataProvide
     private boolean providerExhausted = false;
 
     public FileInstrumentDataProviderImpl(String filePath) throws FileNotFoundException {
-        scanner = new Scanner(new File(filePath));
+        scanner = new Scanner(new BufferedInputStream(new FileInputStream(filePath)), "UTF-8");
     }
 
     @Override
