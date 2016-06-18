@@ -1,6 +1,7 @@
 package rmugattarov.luxoft_task.tasks.statistics;
 
 import rmugattarov.luxoft_task.accumulator.*;
+import rmugattarov.luxoft_task.constants.FileSourceConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 import rmugattarov.luxoft_task.impl.DbInstrumentMultiplierProvider;
@@ -41,6 +42,11 @@ public class InstrumentTask implements Runnable {
                 continue;
             }
 
+            LocalDate localDate = instrumentData.getLocalDate();
+            if (localDate.isAfter(FileSourceConstants.TODAY)) {
+                continue;
+            }
+
             double value = instrumentData.getValue();
             Double multiplier = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
             value *= multiplier;
@@ -51,7 +57,6 @@ public class InstrumentTask implements Runnable {
                     saveInstrumentOneStat(value);
                     break;
                 case InstrumentConstants.INSTRUMENT_TWO:
-                    LocalDate localDate = instrumentData.getLocalDate();
                     if (localDate.getYear() == 2014 && localDate.getMonth() == Month.NOVEMBER) {
                         saveInstrumentTwoStat(value);
                     }
