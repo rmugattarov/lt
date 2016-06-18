@@ -1,6 +1,6 @@
 package rmugattarov.luxoft_task;
 
-import rmugattarov.luxoft_task.accumulator.*;
+import rmugattarov.luxoft_task.accumulator.StatisticsReader;
 import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.impl.FileInstrumentDataProviderImpl;
@@ -24,9 +24,7 @@ public class Main {
         }
         System.out.println("\r\n>> Final reading:");
         logStatistics();
-//        tearDownDb();
         System.out.println("\r\n>> Program complete. Shutting down...");
-//        System.exit(0);
     }
 
     private static void logStatistics() {
@@ -35,15 +33,6 @@ public class Main {
         System.out.printf("> InstrumentTwoMeanNov2014 : %f\r\n", StatisticsReader.getInstrumentTwoMeanNov2014());
         System.out.printf("> InstrumentThreeMax : %f\r\n", StatisticsReader.getInstrumentThreeMax());
         System.out.printf("> %s latest 10 sum : %f\r\n", InstrumentConstants.INSTRUMENT_FOUR, StatisticsReader.getGenericInstrumentStatistics(InstrumentConstants.INSTRUMENT_FOUR));
-    }
-
-    private static void tearDownDb() {
-        try {
-            DriverManager.getConnection(DbConstants.CONN_URL + ";drop=true");
-        } catch (SQLException e) {
-            int errorCode = e.getErrorCode();
-            System.out.printf("\r\n>> Dropped in-memory DB. Error code : %d : %s\r\n", errorCode, errorCode == 45000 ? "OK" : "NOT OK");
-        }
     }
 
     private static void setUpDb() throws SQLException {
