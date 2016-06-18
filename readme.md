@@ -5,13 +5,14 @@ Overview
 --------
 
 This application is an implementation of the Producer/Consumer design 
-pattern with one producer and four consumer threads.
+pattern running on seven threads:
+* One producer thread.
+* Five threads per each business day (Monday through Friday).
+* The Main thread.
+
 The producer uses Scanner to parse the source file and a poison pill 
 to notify the consumers of exhaustion.
-Each of the instruments INSTRUMENT1, INSTRUMENT2 and INSTRUMENT3 have 
-a corresponding consumer thread.
-A fourth consumer thread is used to process other instruments.
-This application uses a Derby in-memory database to produce instrument 
+This application uses an H2 in-memory database to produce instrument 
 value multipliers.
 The multipliers are cached in a Guava LoadingCache.
 The application prints the current instrument statistics in runtime and 
@@ -35,3 +36,12 @@ Running
 
         mvn exec:java -Dexec.args="D:\\example_input.txt"
 
+Load Test
+---------
+
+I tested this app against a source file of 300M lines (12.8GB). 
+The instrument data was spread among 10K instruments. I used VisualVM
+to monitor CPU and Heap usage. Heap usage peaked at 2.3GB and remained 
+stable at 2GB with processing rate of 140K lines per second. Processing 
+of the file took 35 min:
+![](load-300m-console-and-vvm.png)
