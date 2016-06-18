@@ -1,6 +1,5 @@
 package rmugattarov.luxoft_task;
 
-import rmugattarov.luxoft_task.accumulator.AppStats;
 import rmugattarov.luxoft_task.accumulator.StatisticsReader;
 import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
