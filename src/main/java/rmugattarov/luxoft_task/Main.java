@@ -1,6 +1,6 @@
 package rmugattarov.luxoft_task;
 
-import rmugattarov.luxoft_task.accumulator.StatisticsReader;
+import rmugattarov.luxoft_task.accumulator.*;
 import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.impl.FileInstrumentDataProviderImpl;
@@ -24,9 +24,9 @@ public class Main {
         }
         System.out.println("\r\n>> Final reading:");
         logStatistics();
-        tearDownDb();
+//        tearDownDb();
         System.out.println("\r\n>> Program complete. Shutting down...");
-        System.exit(0);
+//        System.exit(0);
     }
 
     private static void logStatistics() {
@@ -47,8 +47,7 @@ public class Main {
     }
 
     private static void setUpDb() throws SQLException {
-        DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
-        Connection connection = DriverManager.getConnection(DbConstants.CONN_URL + ";create=true");
+        Connection connection = DriverManager.getConnection(DbConstants.CONN_URL);
         Statement statement = connection.createStatement();
         statement.executeUpdate("CREATE TABLE " + DbConstants.MULTIPLIER_TABLE + " (" + DbConstants.ID_COL + " BIGINT GENERATED ALWAYS AS IDENTITY, " + DbConstants.NAME_COL + " VARCHAR(64), " + DbConstants.MULTIPLIER_COL + " DOUBLE)");
         statement.executeUpdate("INSERT INTO " + DbConstants.MULTIPLIER_TABLE + " (" + DbConstants.NAME_COL + ", " + DbConstants.MULTIPLIER_COL + ") VALUES ('" + InstrumentConstants.INSTRUMENT_ONE + "', 2.0)");

@@ -33,7 +33,7 @@ public class DbInstrumentMultiplierProvider {
                             result = resultSet.getDouble(DbConstants.MULTIPLIER_COL);
                         }
                     }
-                    return result == null ? 1.0 : result;
+                    return  result == null ? 1.0 : result;
                 }
             });
 
