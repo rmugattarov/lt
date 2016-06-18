@@ -2,7 +2,6 @@ package rmugattarov.luxoft_task.accumulator;
 
 import com.google.common.base.Strings;
 import rmugattarov.luxoft_task.dto.InstrumentData;
-import sun.reflect.generics.tree.Tree;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -67,7 +66,7 @@ public class StatisticsReader {
         BigDecimal thursdayMax = Thursday.instrumentThreeMax;
         BigDecimal fridayMax = Friday.instrumentThreeMax;
 
-        BigDecimal[] dailyStats = new BigDecimal[] {mondayMax, tuesdayMax, wednesdayMax, thursdayMax, fridayMax};
+        BigDecimal[] dailyStats = new BigDecimal[]{mondayMax, tuesdayMax, wednesdayMax, thursdayMax, fridayMax};
         for (BigDecimal dailyStat : dailyStats) {
             if (dailyStat == null) {
                 continue;
@@ -91,7 +90,7 @@ public class StatisticsReader {
         TreeSet<InstrumentData> thursdayStats = Thursday.genericInstrumentStatistics.get(instrumentId);
         TreeSet<InstrumentData> fridayStats = Friday.genericInstrumentStatistics.get(instrumentId);
 
-        TreeSet<InstrumentData>[] dailyStats = new TreeSet[] {mondayStats, tuesdayStats, wednesdayStats, thursdayStats, fridayStats};
+        TreeSet<InstrumentData>[] dailyStats = new TreeSet[]{mondayStats, tuesdayStats, wednesdayStats, thursdayStats, fridayStats};
         TreeSet<InstrumentData> commonStats = null;
         for (TreeSet<InstrumentData> dailyStat : dailyStats) {
             if (dailyStat == null) {

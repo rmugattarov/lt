@@ -1,13 +1,13 @@
 package rmugattarov.luxoft_task.tasks.statistics;
 
+import rmugattarov.luxoft_task.accumulator.AppStats;
 import rmugattarov.luxoft_task.api.InstrumentDataProvider;
-import rmugattarov.luxoft_task.constants.FileSourceConstants;
-import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 import rmugattarov.luxoft_task.tasks.FillInstrumentDataQueueTask;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,6 +29,7 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
 
     @Override
     public void run() {
+        AppStats.startTime = new Date();
         Thread providerThread = new Thread(new FillInstrumentDataQueueTask(instrumentDataProvider, commonQueue));
         Thread mondayTask = new Thread(new InstrumentTask(DayOfWeek.MONDAY, mondayQueue));
         Thread tuesdayTask = new Thread(new InstrumentTask(DayOfWeek.TUESDAY, tuesdayQueue));
@@ -46,6 +47,7 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
         while (true) {
             try {
                 InstrumentData instrumentData = commonQueue.take();
+                AppStats.sourceLinesProcessed++;
                 if (instrumentData == null) {
                     continue;
                 }
@@ -81,6 +83,10 @@ public class CalculateInstrumentStatisticsTask implements Runnable {
             }
         }
         shutdown(providerThread, mondayTask, tuesdayTask, wednesdayTask, thursdayTask, fridayTask);
+
+        long execTime = new Date().getTime() - AppStats.startTime.getTime();
+        System.out.printf(">> Processing time (seconds) : %f\r\n", execTime / 1000.0);
+        System.out.printf(">> Processing rate (lines per second): %f\r\n", AppStats.sourceLinesProcessed / (execTime / 1000.0));
     }
 
     private void shutdown(Thread providerThread, Thread mondayTask, Thread tuesdayTask, Thread wednesdayTask, Thread thursdayTask, Thread fridayTask) {

@@ -1,11 +1,11 @@
 package rmugattarov.luxoft_task;
 
+import rmugattarov.luxoft_task.accumulator.AppStats;
 import rmugattarov.luxoft_task.accumulator.StatisticsReader;
 import rmugattarov.luxoft_task.constants.DbConstants;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.impl.FileInstrumentDataProviderImpl;
 import rmugattarov.luxoft_task.tasks.statistics.CalculateInstrumentStatisticsTask;
-import rmugattarov.luxoft_task.tasks.statistics.StatisticsAccumulator;
 
 import java.io.FileNotFoundException;
 import java.sql.*;
