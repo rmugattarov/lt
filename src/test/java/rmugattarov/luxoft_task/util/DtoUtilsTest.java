@@ -5,7 +5,6 @@ import org.junit.Test;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -18,19 +17,19 @@ public class DtoUtilsTest {
         Assert.assertEquals(InstrumentConstants.INSTRUMENT_ONE, instrumentData.getInstrumentId());
         LocalDate localDate = LocalDate.of(1996, 1, 1);
         Assert.assertEquals(localDate, instrumentData.getLocalDate());
-        Assert.assertEquals(new BigDecimal(2.4655), instrumentData.getValue());
+        Assert.assertEquals(new Double(2.4655), new Double(instrumentData.getValue()));
 
         instrumentData = DtoUtils.convertStringToInstrumentData("INSTRUMENT1,12-Mar-1996,2.5795");
         Assert.assertEquals("INSTRUMENT1", instrumentData.getInstrumentId());
         localDate = LocalDate.of(1996, 3, 12);
         Assert.assertEquals(localDate, instrumentData.getLocalDate());
-        Assert.assertEquals(new BigDecimal(2.5795), instrumentData.getValue());
+        Assert.assertEquals(new Double(2.5795), new Double(instrumentData.getValue()));
 
         instrumentData = DtoUtils.convertStringToInstrumentData("INSTRUMENT2,01-Aug-1996,9.295001295");
         Assert.assertEquals(InstrumentConstants.INSTRUMENT_TWO, instrumentData.getInstrumentId());
         localDate = LocalDate.of(1996, 8, 1);
         Assert.assertEquals(localDate, instrumentData.getLocalDate());
-        Assert.assertEquals(new BigDecimal(9.295001295), instrumentData.getValue());
+        Assert.assertEquals(new Double(9.295001295), new Double(instrumentData.getValue()));
 
     }
 

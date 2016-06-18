@@ -3,7 +3,6 @@ package rmugattarov.luxoft_task.accumulator;
 import com.google.common.base.Strings;
 import rmugattarov.luxoft_task.dto.InstrumentData;
 
-import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -12,76 +11,76 @@ import java.util.TreeSet;
  * Created by rmugattarov on 18.06.2016.
  */
 public class StatisticsReader {
-    public static BigDecimal getInstrumentOneMean() {
-        BigDecimal mondayMean = Monday.instrumentOneSum == null ? null : Monday.instrumentOneSum.divide(new BigDecimal(Monday.instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal tuesdayMean = Tuesday.instrumentOneSum == null ? null : Tuesday.instrumentOneSum.divide(new BigDecimal(Tuesday.instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal wednesdayMean = Wednesday.instrumentOneSum == null ? null : Wednesday.instrumentOneSum.divide(new BigDecimal(Wednesday.instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal thursdayMean = Thursday.instrumentOneSum == null ? null : Thursday.instrumentOneSum.divide(new BigDecimal(Thursday.instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal fridayMean = Friday.instrumentOneSum == null ? null : Friday.instrumentOneSum.divide(new BigDecimal(Friday.instrumentOneElementCount), BigDecimal.ROUND_HALF_UP);
+    public static double getInstrumentOneMean() {
+        double mondayMean = Monday.instrumentOneElementCount == 0 ? -1 : Monday.instrumentOneSum / Monday.instrumentOneElementCount;
+        double tuesdayMean = Tuesday.instrumentOneElementCount == 0 ? -1 : Tuesday.instrumentOneSum / Tuesday.instrumentOneElementCount;
+        double wednesdayMean = Wednesday.instrumentOneElementCount == 0 ? -1 : Wednesday.instrumentOneSum / Wednesday.instrumentOneElementCount;
+        double thursdayMean = Thursday.instrumentOneElementCount == 0 ? -1 : Thursday.instrumentOneSum / Thursday.instrumentOneElementCount;
+        double fridayMean = Friday.instrumentOneElementCount == 0 ? -1 : Friday.instrumentOneSum / Friday.instrumentOneElementCount;
 
-        BigDecimal[] dailyStats = new BigDecimal[]{mondayMean, tuesdayMean, wednesdayMean, thursdayMean, fridayMean};
-        BigDecimal sum = null;
+        double[] dailyStats = new double[]{mondayMean, tuesdayMean, wednesdayMean, thursdayMean, fridayMean};
+        double sum = -1;
         int elementCount = 0;
-        for (BigDecimal dailyStat : dailyStats) {
-            if (dailyStat == null) {
+        for (double dailyStat : dailyStats) {
+            if (dailyStat == -1) {
                 continue;
             }
             elementCount++;
-            if (sum == null) {
-                sum = BigDecimal.ZERO;
+            if (sum == -1) {
+                sum = 0;
             }
-            sum = sum.add(dailyStat);
+            sum += dailyStat;
         }
-        return sum == null ? null : sum.divide(new BigDecimal(elementCount), BigDecimal.ROUND_HALF_UP);
+        return sum == -1 ? -1 : sum / elementCount;
     }
 
-    public static BigDecimal getInstrumentTwoMeanNov2014() {
-        BigDecimal mondayMean = Monday.instrumentTwoNov2014Sum == null ? null : Monday.instrumentTwoNov2014Sum.divide(new BigDecimal(Monday.instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal tuesdayMean = Tuesday.instrumentTwoNov2014Sum == null ? null : Tuesday.instrumentTwoNov2014Sum.divide(new BigDecimal(Tuesday.instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal wednesdayMean = Wednesday.instrumentTwoNov2014Sum == null ? null : Wednesday.instrumentTwoNov2014Sum.divide(new BigDecimal(Wednesday.instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal thursdayMean = Thursday.instrumentTwoNov2014Sum == null ? null : Thursday.instrumentTwoNov2014Sum.divide(new BigDecimal(Thursday.instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
-        BigDecimal fridayMean = Friday.instrumentTwoNov2014Sum == null ? null : Friday.instrumentTwoNov2014Sum.divide(new BigDecimal(Friday.instrumentTwoNov2014ElementCount), BigDecimal.ROUND_HALF_UP);
+    public static double getInstrumentTwoMeanNov2014() {
+        double mondayMean = Monday.instrumentTwoNov2014ElementCount == 0 ? -1 : Monday.instrumentTwoNov2014Sum / Monday.instrumentTwoNov2014ElementCount;
+        double tuesdayMean = Tuesday.instrumentTwoNov2014ElementCount == 0 ? -1 : Tuesday.instrumentTwoNov2014Sum / Tuesday.instrumentTwoNov2014ElementCount;
+        double wednesdayMean = Wednesday.instrumentTwoNov2014ElementCount == 0 ? -1 : Wednesday.instrumentTwoNov2014Sum / Wednesday.instrumentTwoNov2014ElementCount;
+        double thursdayMean = Thursday.instrumentTwoNov2014ElementCount == 0 ? -1 : Thursday.instrumentTwoNov2014Sum / Thursday.instrumentTwoNov2014ElementCount;
+        double fridayMean = Friday.instrumentTwoNov2014ElementCount == 0 ? -1 : Friday.instrumentTwoNov2014Sum / Friday.instrumentTwoNov2014ElementCount;
 
-        BigDecimal[] dailyStats = new BigDecimal[]{mondayMean, tuesdayMean, wednesdayMean, thursdayMean, fridayMean};
-        BigDecimal sum = null;
+        double[] dailyStats = new double[]{mondayMean, tuesdayMean, wednesdayMean, thursdayMean, fridayMean};
+        double sum = -1;
         int elementCount = 0;
-        for (BigDecimal dailyStat : dailyStats) {
-            if (dailyStat == null) {
+        for (double dailyStat : dailyStats) {
+            if (dailyStat == -1) {
                 continue;
             }
             elementCount++;
-            if (sum == null) {
-                sum = BigDecimal.ZERO;
+            if (sum == -1) {
+                sum = 0;
             }
-            sum = sum.add(dailyStat);
+            sum += dailyStat;
         }
-        return sum == null ? null : sum.divide(new BigDecimal(elementCount), BigDecimal.ROUND_HALF_UP);
+        return sum == -1 ? -1 : sum / elementCount;
     }
 
-    public static BigDecimal getInstrumentThreeMax() {
-        BigDecimal result = null;
-        BigDecimal mondayMax = Monday.instrumentThreeMax;
-        BigDecimal tuesdayMax = Tuesday.instrumentThreeMax;
-        BigDecimal wednesdayMax = Wednesday.instrumentThreeMax;
-        BigDecimal thursdayMax = Thursday.instrumentThreeMax;
-        BigDecimal fridayMax = Friday.instrumentThreeMax;
+    public static double getInstrumentThreeMax() {
+        double result = -1;
+        double mondayMax = Monday.instrumentThreeMax;
+        double tuesdayMax = Tuesday.instrumentThreeMax;
+        double wednesdayMax = Wednesday.instrumentThreeMax;
+        double thursdayMax = Thursday.instrumentThreeMax;
+        double fridayMax = Friday.instrumentThreeMax;
 
-        BigDecimal[] dailyStats = new BigDecimal[]{mondayMax, tuesdayMax, wednesdayMax, thursdayMax, fridayMax};
-        for (BigDecimal dailyStat : dailyStats) {
-            if (dailyStat == null) {
+        double[] dailyStats = new double[]{mondayMax, tuesdayMax, wednesdayMax, thursdayMax, fridayMax};
+        for (double dailyStat : dailyStats) {
+            if (dailyStat == -1) {
                 continue;
             }
-            if (result == null) {
-                result = BigDecimal.ZERO;
+            if (result == -1) {
+                result = 0;
             }
-            result = result.max(dailyStat);
+            result = Math.max(result, dailyStat);
         }
         return result;
     }
 
-    public static BigDecimal getGenericInstrumentStatistics(String instrumentId) {
+    public static double getGenericInstrumentStatistics(String instrumentId) {
         if (Strings.isNullOrEmpty(instrumentId)) {
-            return null;
+            return -1;
         }
 
         TreeSet<InstrumentData> mondayStats = Monday.genericInstrumentStatistics.get(instrumentId);
@@ -102,13 +101,13 @@ public class StatisticsReader {
             commonStats.addAll(dailyStat);
         }
         if (commonStats == null) {
-            return null;
+            return -1;
         }
         int elementCount = 0;
-        BigDecimal result = BigDecimal.ZERO;
+        double result = 0;
         Iterator<InstrumentData> descendingIterator = commonStats.descendingIterator();
         while (descendingIterator.hasNext()) {
-            result = result.add(descendingIterator.next().getValue());
+            result += (descendingIterator.next().getValue());
             if (++elementCount == 10) {
                 break;
             }

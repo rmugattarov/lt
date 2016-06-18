@@ -7,5 +7,5 @@ import java.util.Date;
  */
 public class AppStats {
     public static volatile Date startTime;
-    public static volatile long sourceLinesProcessed = 0;
+    public static volatile int sourceLinesProcessed = 0;
 }

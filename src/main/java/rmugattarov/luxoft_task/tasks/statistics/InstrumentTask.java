@@ -3,11 +3,8 @@ package rmugattarov.luxoft_task.tasks.statistics;
 import rmugattarov.luxoft_task.accumulator.*;
 import rmugattarov.luxoft_task.constants.InstrumentConstants;
 import rmugattarov.luxoft_task.dto.InstrumentData;
-import rmugattarov.luxoft_task.dto.Multiplier;
 import rmugattarov.luxoft_task.impl.DbInstrumentMultiplierProvider;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -43,12 +40,9 @@ public class InstrumentTask implements Runnable {
                 continue;
             }
 
-            BigDecimal value = instrumentData.getValue();
-            Multiplier multiplierDto = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
-            BigDecimal multiplier = multiplierDto.getMultiplier();
-            if (multiplier != null) {
-                value = value.multiply(multiplier);
-            }
+            double value = instrumentData.getValue();
+            Double multiplier = DbInstrumentMultiplierProvider.getInstrumentMultiplier(instrumentData.getInstrumentId());
+            value *= multiplier;
 
             String instrumentId = instrumentData.getInstrumentId();
             switch (instrumentId) {
@@ -72,7 +66,7 @@ public class InstrumentTask implements Runnable {
         System.out.printf("\r\n>> %s task complete\r\n", myDay);
     }
 
-    private void saveGenericInstrumentStat(InstrumentData instrumentData, BigDecimal value, String instrumentId) {
+    private void saveGenericInstrumentStat(InstrumentData instrumentData, double value, String instrumentId) {
         instrumentData = new InstrumentData(instrumentId, instrumentData.getLocalDate(), value);
         TreeSet<InstrumentData> treeSet = null;
         switch (myDay) {
@@ -123,132 +117,132 @@ public class InstrumentTask implements Runnable {
         }
     }
 
-    private void saveInstrumentThreeStat(BigDecimal value) {
+    private void saveInstrumentThreeStat(double value) {
         switch (myDay) {
             case MONDAY:
-                if (Monday.instrumentThreeMax == null) {
+                if (Monday.instrumentThreeMax == -1) {
                     Monday.instrumentThreeMax = value;
                 } else {
-                    Monday.instrumentThreeMax = Monday.instrumentThreeMax.max(value);
+                    Monday.instrumentThreeMax = Math.max(Monday.instrumentThreeMax, value);
                 }
                 break;
             case TUESDAY:
-                if (Tuesday.instrumentThreeMax == null) {
+                if (Tuesday.instrumentThreeMax == -1) {
                     Tuesday.instrumentThreeMax = value;
                 } else {
-                    Tuesday.instrumentThreeMax = Tuesday.instrumentThreeMax.max(value);
+                    Tuesday.instrumentThreeMax = Math.max(Monday.instrumentThreeMax, value);
                 }
                 break;
             case WEDNESDAY:
-                if (Wednesday.instrumentThreeMax == null) {
+                if (Wednesday.instrumentThreeMax == -1) {
                     Wednesday.instrumentThreeMax = value;
                 } else {
-                    Wednesday.instrumentThreeMax = Wednesday.instrumentThreeMax.max(value);
+                    Wednesday.instrumentThreeMax = Math.max(Monday.instrumentThreeMax, value);
                 }
                 break;
             case THURSDAY:
-                if (Thursday.instrumentThreeMax == null) {
+                if (Thursday.instrumentThreeMax == -1) {
                     Thursday.instrumentThreeMax = value;
                 } else {
-                    Thursday.instrumentThreeMax = Thursday.instrumentThreeMax.max(value);
+                    Thursday.instrumentThreeMax = Math.max(Monday.instrumentThreeMax, value);
                 }
                 break;
             case FRIDAY:
-                if (Friday.instrumentThreeMax == null) {
+                if (Friday.instrumentThreeMax == -1) {
                     Friday.instrumentThreeMax = value;
                 } else {
-                    Friday.instrumentThreeMax = Friday.instrumentThreeMax.max(value);
+                    Friday.instrumentThreeMax = Math.max(Monday.instrumentThreeMax, value);
                 }
                 break;
         }
     }
 
-    private void saveInstrumentTwoStat(BigDecimal value) {
+    private void saveInstrumentTwoStat(double value) {
         switch (myDay) {
             case MONDAY:
-                if (Monday.instrumentTwoNov2014Sum == null) {
+                if (Monday.instrumentTwoNov2014Sum == -1) {
                     Monday.instrumentTwoNov2014Sum = value;
                 } else {
-                    Monday.instrumentTwoNov2014Sum = Monday.instrumentTwoNov2014Sum.add(value);
+                    Monday.instrumentTwoNov2014Sum += value;
                 }
                 Monday.instrumentTwoNov2014ElementCount++;
                 break;
             case TUESDAY:
-                if (Tuesday.instrumentTwoNov2014Sum == null) {
+                if (Tuesday.instrumentTwoNov2014Sum == -1) {
                     Tuesday.instrumentTwoNov2014Sum = value;
                 } else {
-                    Tuesday.instrumentTwoNov2014Sum = Tuesday.instrumentTwoNov2014Sum.add(value);
+                    Tuesday.instrumentTwoNov2014Sum += value;
                 }
-                Tuesday.instrumentTwoNov2014ElementCount = Tuesday.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
+                Tuesday.instrumentTwoNov2014ElementCount++;
                 break;
             case WEDNESDAY:
-                if (Wednesday.instrumentTwoNov2014Sum == null) {
+                if (Wednesday.instrumentTwoNov2014Sum == -1) {
                     Wednesday.instrumentTwoNov2014Sum = value;
                 } else {
-                    Wednesday.instrumentTwoNov2014Sum = Wednesday.instrumentTwoNov2014Sum.add(value);
+                    Wednesday.instrumentTwoNov2014Sum += value;
                 }
-                Wednesday.instrumentTwoNov2014ElementCount = Wednesday.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
+                Wednesday.instrumentTwoNov2014ElementCount++;
                 break;
             case THURSDAY:
-                if (Thursday.instrumentTwoNov2014Sum == null) {
+                if (Thursday.instrumentTwoNov2014Sum == -1) {
                     Thursday.instrumentTwoNov2014Sum = value;
                 } else {
-                    Thursday.instrumentTwoNov2014Sum = Thursday.instrumentTwoNov2014Sum.add(value);
+                    Thursday.instrumentTwoNov2014Sum += value;
                 }
-                Thursday.instrumentTwoNov2014ElementCount = Thursday.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
+                Thursday.instrumentTwoNov2014ElementCount++;
                 break;
             case FRIDAY:
-                if (Friday.instrumentTwoNov2014Sum == null) {
+                if (Friday.instrumentTwoNov2014Sum == -1) {
                     Friday.instrumentTwoNov2014Sum = value;
                 } else {
-                    Friday.instrumentTwoNov2014Sum = Friday.instrumentTwoNov2014Sum.add(value);
+                    Friday.instrumentTwoNov2014Sum += value;
                 }
-                Friday.instrumentTwoNov2014ElementCount = Friday.instrumentTwoNov2014ElementCount.add(BigInteger.ONE);
+                Friday.instrumentTwoNov2014ElementCount++;
                 break;
         }
     }
 
-    private void saveInstrumentOneStat(BigDecimal value) {
+    private void saveInstrumentOneStat(double value) {
         switch (myDay) {
             case MONDAY:
-                if (Monday.instrumentOneSum == null) {
+                if (Monday.instrumentOneSum == -1) {
                     Monday.instrumentOneSum = value;
                 } else {
-                    Monday.instrumentOneSum = Monday.instrumentOneSum.add(value);
+                    Monday.instrumentOneSum += value;
                 }
                 Monday.instrumentOneElementCount++;
                 break;
             case TUESDAY:
-                if (Tuesday.instrumentOneSum == null) {
+                if (Tuesday.instrumentOneSum == -1) {
                     Tuesday.instrumentOneSum = value;
                 } else {
-                    Tuesday.instrumentOneSum = Tuesday.instrumentOneSum.add(value);
+                    Tuesday.instrumentOneSum += value;
                 }
-                Tuesday.instrumentOneElementCount = Tuesday.instrumentOneElementCount.add(BigInteger.ONE);
+                Tuesday.instrumentOneElementCount++;
                 break;
             case WEDNESDAY:
-                if (Wednesday.instrumentOneSum == null) {
+                if (Wednesday.instrumentOneSum == -1) {
                     Wednesday.instrumentOneSum = value;
                 } else {
-                    Wednesday.instrumentOneSum = Wednesday.instrumentOneSum.add(value);
+                    Wednesday.instrumentOneSum += value;
                 }
-                Wednesday.instrumentOneElementCount = Wednesday.instrumentOneElementCount.add(BigInteger.ONE);
+                Wednesday.instrumentOneElementCount++;
                 break;
             case THURSDAY:
-                if (Thursday.instrumentOneSum == null) {
+                if (Thursday.instrumentOneSum == -1) {
                     Thursday.instrumentOneSum = value;
                 } else {
-                    Thursday.instrumentOneSum = Thursday.instrumentOneSum.add(value);
+                    Thursday.instrumentOneSum += value;
                 }
-                Thursday.instrumentOneElementCount = Thursday.instrumentOneElementCount.add(BigInteger.ONE);
+                Thursday.instrumentOneElementCount++;
                 break;
             case FRIDAY:
-                if (Friday.instrumentOneSum == null) {
+                if (Friday.instrumentOneSum == -1) {
                     Friday.instrumentOneSum = value;
                 } else {
-                    Friday.instrumentOneSum = Friday.instrumentOneSum.add(value);
+                    Friday.instrumentOneSum += value;
                 }
-                Friday.instrumentOneElementCount = Friday.instrumentOneElementCount.add(BigInteger.ONE);
+                Friday.instrumentOneElementCount++;
                 break;
         }
     }
